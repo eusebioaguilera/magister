@@ -13,14 +13,14 @@ import javafx.scene.text.FontWeight;
 import magister.model.Asignatura;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AsignaturasView extends VBox {
     private TableView<Asignatura> table;
     private ObservableList<Asignatura> asignaturas;
-    private TableColumn<Asignatura, String> colCodigo;
+    private TableColumn<Asignatura, Integer> colId;
     private TableColumn<Asignatura, String> colNombre;
     private TableColumn<Asignatura, Integer> colCreditos;
+    private int nextId = 1;
 
     public AsignaturasView() {
         asignaturas = FXCollections.observableArrayList(new ArrayList<>());
@@ -31,8 +31,8 @@ public class AsignaturasView extends VBox {
         Label title = new Label("Gestión de Asignaturas");
         title.setFont(Font.font("SansSerif", FontWeight.BOLD, 18));
         
-        colCodigo = new TableColumn<>("Código");
-        colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+        colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         
         colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -41,7 +41,7 @@ public class AsignaturasView extends VBox {
         colCreditos.setCellValueFactory(new PropertyValueFactory<>("creditos"));
         
         table = new TableView<>(asignaturas);
-        table.getColumns().addAll(colCodigo, colNombre, colCreditos);
+        table.getColumns().addAll(colId, colNombre, colCreditos);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
         HBox buttonBox = new HBox(10);
@@ -58,7 +58,6 @@ public class AsignaturasView extends VBox {
     }
 
     private void agregarAsignatura() {
-        TextField codigoField = new TextField();
         TextField nombreField = new TextField();
         TextField creditosField = new TextField();
         
@@ -67,8 +66,8 @@ public class AsignaturasView extends VBox {
         grid.setVgap(10);
         grid.setPadding(new Insets(10));
         
-        grid.add(new Label("Código:"), 0, 0);
-        grid.add(codigoField, 1, 0);
+        grid.add(new Label("ID:"), 0, 0);
+        grid.add(new Label(String.valueOf(nextId)), 1, 0);
         grid.add(new Label("Nombre:"), 0, 1);
         grid.add(nombreField, 1, 1);
         grid.add(new Label("Créditos:"), 0, 2);
@@ -81,14 +80,14 @@ public class AsignaturasView extends VBox {
         
         dialog.showAndWait().ifPresent(result -> {
             if (result == ButtonType.OK) {
-                String codigo = codigoField.getText().trim();
                 String nombre = nombreField.getText().trim();
                 String creditosStr = creditosField.getText().trim();
                 
-                if (!codigo.isEmpty() && !nombre.isEmpty() && !creditosStr.isEmpty()) {
+                if (!nombre.isEmpty() && !creditosStr.isEmpty()) {
                     try {
                         int creditos = Integer.parseInt(creditosStr);
-                        asignaturas.add(new Asignatura(codigo, nombre, creditos));
+                        asignaturas.add(new Asignatura(nextId, nombre, creditos));
+                        nextId++;
                     } catch (NumberFormatException ex) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");

@@ -17,10 +17,11 @@ import java.util.ArrayList;
 public class AlumnosView extends VBox {
     private TableView<Alumno> table;
     private ObservableList<Alumno> alumnos;
-    private TableColumn<Alumno, String> colNia;
+    private TableColumn<Alumno, Integer> colId;
     private TableColumn<Alumno, String> colNombre;
     private TableColumn<Alumno, String> colApellido;
     private TableColumn<Alumno, String> colEmail;
+    private int nextId = 1;
 
     public AlumnosView() {
         alumnos = FXCollections.observableArrayList(new ArrayList<>());
@@ -31,8 +32,8 @@ public class AlumnosView extends VBox {
         Label title = new Label("Gestión de Alumnos");
         title.setFont(Font.font("SansSerif", FontWeight.BOLD, 18));
         
-        colNia = new TableColumn<>("NIA");
-        colNia.setCellValueFactory(new PropertyValueFactory<>("nia"));
+        colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         
         colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -44,7 +45,7 @@ public class AlumnosView extends VBox {
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         
         table = new TableView<>(alumnos);
-        table.getColumns().addAll(colNia, colNombre, colApellido, colEmail);
+        table.getColumns().addAll(colId, colNombre, colApellido, colEmail);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
         HBox buttonBox = new HBox(10);
@@ -61,7 +62,6 @@ public class AlumnosView extends VBox {
     }
 
     private void agregarAlumno() {
-        TextField niaField = new TextField();
         TextField nombreField = new TextField();
         TextField apellidoField = new TextField();
         TextField emailField = new TextField();
@@ -71,8 +71,8 @@ public class AlumnosView extends VBox {
         grid.setVgap(10);
         grid.setPadding(new Insets(10));
         
-        grid.add(new Label("NIA:"), 0, 0);
-        grid.add(niaField, 1, 0);
+        grid.add(new Label("ID:"), 0, 0);
+        grid.add(new Label(String.valueOf(nextId)), 1, 0);
         grid.add(new Label("Nombre:"), 0, 1);
         grid.add(nombreField, 1, 1);
         grid.add(new Label("Apellido:"), 0, 2);
@@ -87,17 +87,17 @@ public class AlumnosView extends VBox {
         
         dialog.showAndWait().ifPresent(result -> {
             if (result == ButtonType.OK) {
-                String nia = niaField.getText().trim();
                 String nombre = nombreField.getText().trim();
                 String apellido = apellidoField.getText().trim();
                 String email = emailField.getText().trim();
                 
-                if (!nia.isEmpty() && !nombre.isEmpty() && !apellido.isEmpty()) {
-                    alumnos.add(new Alumno(nia, nombre, apellido, email));
+                if (!nombre.isEmpty() && !apellido.isEmpty()) {
+                    alumnos.add(new Alumno(nextId, nombre, apellido, email));
+                    nextId++;
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
-                    alert.setContentText("NIA, Nombre y Apellido son obligatorios");
+                    alert.setContentText("Nombre y Apellido son obligatorios");
                     alert.showAndWait();
                 }
             }

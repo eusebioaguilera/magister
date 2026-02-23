@@ -15,9 +15,11 @@ public class App extends Application {
         TabPane tabPane = new TabPane();
         
         Tab tabAsignaturas = new Tab("Asignaturas");
+        tabAsignaturas.setClosable(false);
         tabAsignaturas.setContent(new AsignaturasView());
         
         Tab tabAlumnos = new Tab("Alumnos");
+        tabAlumnos.setClosable(false);
         tabAlumnos.setContent(new AlumnosView());
         
         tabPane.getTabs().addAll(tabAsignaturas, tabAlumnos);
