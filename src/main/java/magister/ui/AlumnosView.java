@@ -10,9 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import magister.dao.AlumnoDAO;
 import magister.model.Alumno;
-
-import java.util.ArrayList;
 
 public class AlumnosView extends VBox {
     private TableView<Alumno> table;
@@ -21,10 +20,11 @@ public class AlumnosView extends VBox {
     private TableColumn<Alumno, String> colNombre;
     private TableColumn<Alumno, String> colApellido;
     private TableColumn<Alumno, String> colEmail;
-    private int nextId = 1;
+    private final AlumnoDAO dao;
 
     public AlumnosView() {
-        alumnos = FXCollections.observableArrayList(new ArrayList<>());
+        dao = new AlumnoDAO();
+        alumnos = FXCollections.observableArrayList(dao.getAll());
         
         setSpacing(10);
         setPadding(new Insets(10));
@@ -62,6 +62,8 @@ public class AlumnosView extends VBox {
     }
 
     private void agregarAlumno() {
+        int nextId = dao.getNextId();
+        
         TextField nombreField = new TextField();
         TextField apellidoField = new TextField();
         TextField emailField = new TextField();
@@ -92,8 +94,9 @@ public class AlumnosView extends VBox {
                 String email = emailField.getText().trim();
                 
                 if (!nombre.isEmpty() && !apellido.isEmpty()) {
-                    alumnos.add(new Alumno(nextId, nombre, apellido, email));
-                    nextId++;
+                    Alumno a = new Alumno(nextId, nombre, apellido, email);
+                    dao.insert(a);
+                    alumnos.add(a);
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -107,6 +110,7 @@ public class AlumnosView extends VBox {
     private void eliminarAlumno() {
         Alumno selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
+            dao.delete(selected.getId());
             alumnos.remove(selected);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);

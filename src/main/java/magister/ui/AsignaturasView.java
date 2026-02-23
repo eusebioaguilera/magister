@@ -10,9 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import magister.dao.AsignaturaDAO;
 import magister.model.Asignatura;
-
-import java.util.ArrayList;
 
 public class AsignaturasView extends VBox {
     private TableView<Asignatura> table;
@@ -20,10 +19,11 @@ public class AsignaturasView extends VBox {
     private TableColumn<Asignatura, Integer> colId;
     private TableColumn<Asignatura, String> colNombre;
     private TableColumn<Asignatura, Integer> colCreditos;
-    private int nextId = 1;
+    private final AsignaturaDAO dao;
 
     public AsignaturasView() {
-        asignaturas = FXCollections.observableArrayList(new ArrayList<>());
+        dao = new AsignaturaDAO();
+        asignaturas = FXCollections.observableArrayList(dao.getAll());
         
         setSpacing(10);
         setPadding(new Insets(10));
@@ -58,6 +58,8 @@ public class AsignaturasView extends VBox {
     }
 
     private void agregarAsignatura() {
+        int nextId = dao.getNextId();
+        
         TextField nombreField = new TextField();
         TextField creditosField = new TextField();
         
@@ -86,8 +88,9 @@ public class AsignaturasView extends VBox {
                 if (!nombre.isEmpty() && !creditosStr.isEmpty()) {
                     try {
                         int creditos = Integer.parseInt(creditosStr);
-                        asignaturas.add(new Asignatura(nextId, nombre, creditos));
-                        nextId++;
+                        Asignatura a = new Asignatura(nextId, nombre, creditos);
+                        dao.insert(a);
+                        asignaturas.add(a);
                     } catch (NumberFormatException ex) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
@@ -107,6 +110,7 @@ public class AsignaturasView extends VBox {
     private void eliminarAsignatura() {
         Asignatura selected = table.getSelectionModel().getSelectedItem();
         if (selected != null) {
+            dao.delete(selected.getId());
             asignaturas.remove(selected);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
