@@ -56,6 +56,11 @@ public class AsignaturasView extends VBox {
         getChildren().addAll(title, table, buttonBox);
         VBox.setVgrow(table, javafx.scene.layout.Priority.ALWAYS);
     }
+    
+    public void refresh() {
+        asignaturas.clear();
+        asignaturas.addAll(dao.getAll());
+    }
 
     private void agregarAsignatura() {
         int nextId = dao.getNextId();

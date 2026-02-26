@@ -60,6 +60,11 @@ public class AlumnosView extends VBox {
         getChildren().addAll(title, table, buttonBox);
         VBox.setVgrow(table, javafx.scene.layout.Priority.ALWAYS);
     }
+    
+    public void refresh() {
+        alumnos.clear();
+        alumnos.addAll(dao.getAll());
+    }
 
     private void agregarAlumno() {
         int nextId = dao.getNextId();

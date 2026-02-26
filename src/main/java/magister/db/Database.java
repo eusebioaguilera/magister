@@ -77,4 +77,17 @@ public class Database {
             e.printStackTrace();
         }
     }
+
+    public void changeDatabase(String dbPath) throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+        }
+        connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+        instance = null;
+        initTables();
+    }
+
+    public static String getCurrentDbPath() {
+        return DB_URL.replace("jdbc:sqlite:", "");
+    }
 }
