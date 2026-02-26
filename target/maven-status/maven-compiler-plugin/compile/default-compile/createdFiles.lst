@@ -1,9 +1,0 @@
-magister\model\Asignatura.class
-magister\ui\AlumnosView.class
-magister\dao\AsignaturaDAO.class
-magister\Main.class
-magister\model\Alumno.class
-magister\App.class
-magister\ui\AsignaturasView.class
-magister\dao\AlumnoDAO.class
-magister\db\Database.class
