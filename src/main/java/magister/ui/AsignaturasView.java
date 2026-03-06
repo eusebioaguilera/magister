@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -53,6 +54,12 @@ public class AsignaturasView extends VBox {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
         table.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Asignatura selected = table.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    mostrarEditorAsignatura(selected);
+                }
+            }
         });
         
         HBox buttonBox = new HBox(10);
