@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -54,22 +53,18 @@ public class AsignaturasView extends VBox {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
         table.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                Asignatura selected = table.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    mostrarEditorAsignatura(selected);
-                }
-            }
         });
         
         HBox buttonBox = new HBox(10);
         Button btnAgregar = new Button("Agregar");
+        Button btnEditar = new Button("Editar");
         Button btnEliminar = new Button("Eliminar");
         
         btnAgregar.setOnAction(e -> agregarAsignatura());
+        btnEditar.setOnAction(e -> editarAsignatura());
         btnEliminar.setOnAction(e -> eliminarAsignatura());
         
-        buttonBox.getChildren().addAll(btnAgregar, btnEliminar);
+        buttonBox.getChildren().addAll(btnAgregar, btnEditar, btnEliminar);
         
         getChildren().addAll(title, table, buttonBox);
         VBox.setVgrow(table, javafx.scene.layout.Priority.ALWAYS);
@@ -139,6 +134,18 @@ public class AsignaturasView extends VBox {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Advertencia");
             alert.setContentText("Seleccione una fila para eliminar");
+            alert.showAndWait();
+        }
+    }
+
+    private void editarAsignatura() {
+        Asignatura selected = table.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            mostrarEditorAsignatura(selected);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Advertencia");
+            alert.setContentText("Seleccione una fila para editar");
             alert.showAndWait();
         }
     }
