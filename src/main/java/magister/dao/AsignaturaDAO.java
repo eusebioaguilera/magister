@@ -57,6 +57,19 @@ public class AsignaturaDAO {
         }
     }
 
+    public void update(Asignatura a) {
+        String sql = "UPDATE asignaturas SET nombre = ?, creditos = ? WHERE id = ?";
+        
+        try (PreparedStatement ps = db.getConnection().prepareStatement(sql)) {
+            ps.setString(1, a.getNombre());
+            ps.setInt(2, a.getCreditos());
+            ps.setInt(3, a.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getNextId() {
         try {
             return db.getNextId("asignaturas");

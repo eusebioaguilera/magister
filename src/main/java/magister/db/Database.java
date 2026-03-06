@@ -49,10 +49,35 @@ public class Database {
             )
             """;
         
+        String createResultadosAprendizaje = """
+            CREATE TABLE IF NOT EXISTS resultados_aprendizaje (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_asignatura INTEGER NOT NULL,
+                codigo TEXT NOT NULL,
+                descripcion TEXT NOT NULL,
+                ponderacion REAL NOT NULL DEFAULT 1.0,
+                FOREIGN KEY (id_asignatura) REFERENCES asignaturas(id) ON DELETE CASCADE
+            )
+            """;
+        
+        String createCriteriosEvaluacion = """
+            CREATE TABLE IF NOT EXISTS criterios_evaluacion (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_resultado INTEGER NOT NULL,
+                codigo TEXT NOT NULL,
+                descripcion TEXT NOT NULL,
+                FOREIGN KEY (id_resultado) REFERENCES resultados_aprendizaje(id) ON DELETE CASCADE
+            )
+            """;
+        
         try (PreparedStatement ps1 = connection.prepareStatement(createAsignaturas);
-             PreparedStatement ps2 = connection.prepareStatement(createAlumnos)) {
+             PreparedStatement ps2 = connection.prepareStatement(createAlumnos);
+             PreparedStatement ps3 = connection.prepareStatement(createResultadosAprendizaje);
+             PreparedStatement ps4 = connection.prepareStatement(createCriteriosEvaluacion)) {
             ps1.execute();
             ps2.execute();
+            ps3.execute();
+            ps4.execute();
         }
     }
 
