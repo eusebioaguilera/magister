@@ -5,12 +5,14 @@ public class CriterioEvaluacion {
     private int idResultado;
     private String codigo;
     private String descripcion;
+    private double ponderacion;
 
-    public CriterioEvaluacion(int id, int idResultado, String codigo, String descripcion) {
+    public CriterioEvaluacion(int id, int idResultado, String codigo, String descripcion, double ponderacion) {
         this.id = id;
         this.idResultado = idResultado;
         this.codigo = codigo;
         this.descripcion = descripcion;
+        this.ponderacion = ponderacion;
     }
 
     public int getId() { return id; }
@@ -21,6 +23,8 @@ public class CriterioEvaluacion {
     public void setCodigo(String codigo) { this.codigo = codigo; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public double getPonderacion() { return ponderacion; }
+    public void setPonderacion(double ponderacion) { this.ponderacion = ponderacion; }
 
     @Override
     public String toString() {

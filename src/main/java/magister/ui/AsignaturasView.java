@@ -343,7 +343,7 @@ public class AsignaturasView extends VBox {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.getCodigo() + " - " + item.getDescripcion());
+                    setText(item.getCodigo() + " - " + item.getDescripcion() + " (" + item.getPonderacion() + ")");
                 }
             }
         });
@@ -424,6 +424,7 @@ public class AsignaturasView extends VBox {
         TextField codigoField = new TextField();
         TextArea descripcionField = new TextArea();
         descripcionField.setPrefRowCount(3);
+        TextField ponderacionField = new TextField("1.0");
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -436,6 +437,8 @@ public class AsignaturasView extends VBox {
         grid.add(codigoField, 1, 1);
         grid.add(new Label("Descripción:"), 0, 2);
         grid.add(descripcionField, 1, 2);
+        grid.add(new Label("Ponderación:"), 0, 3);
+        grid.add(ponderacionField, 1, 3);
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Nuevo Criterio de Evaluación");
@@ -446,11 +449,20 @@ public class AsignaturasView extends VBox {
             if (result == ButtonType.OK) {
                 String codigo = codigoField.getText().trim();
                 String descripcion = descripcionField.getText().trim();
+                String ponderacionStr = ponderacionField.getText().trim();
 
-                if (!codigo.isEmpty() && !descripcion.isEmpty()) {
-                    CriterioEvaluacion ce = new CriterioEvaluacion(nextId, idResultado, codigo, descripcion);
-                    criterioDao.insert(ce);
-                    criteriosList.add(ce);
+                if (!codigo.isEmpty() && !descripcion.isEmpty() && !ponderacionStr.isEmpty()) {
+                    try {
+                        double ponderacion = Double.parseDouble(ponderacionStr);
+                        CriterioEvaluacion ce = new CriterioEvaluacion(nextId, idResultado, codigo, descripcion, ponderacion);
+                        criterioDao.insert(ce);
+                        criteriosList.add(ce);
+                    } catch (NumberFormatException ex) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setContentText("La ponderación debe ser un número");
+                        alert.showAndWait();
+                    }
                 }
             }
         });
@@ -460,6 +472,7 @@ public class AsignaturasView extends VBox {
         TextField codigoField = new TextField(ce.getCodigo());
         TextArea descripcionField = new TextArea(ce.getDescripcion());
         descripcionField.setPrefRowCount(3);
+        TextField ponderacionField = new TextField(String.valueOf(ce.getPonderacion()));
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -472,6 +485,8 @@ public class AsignaturasView extends VBox {
         grid.add(codigoField, 1, 1);
         grid.add(new Label("Descripción:"), 0, 2);
         grid.add(descripcionField, 1, 2);
+        grid.add(new Label("Ponderación:"), 0, 3);
+        grid.add(ponderacionField, 1, 3);
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Editar Criterio de Evaluación");
@@ -482,11 +497,21 @@ public class AsignaturasView extends VBox {
             if (result == ButtonType.OK) {
                 String codigo = codigoField.getText().trim();
                 String descripcion = descripcionField.getText().trim();
+                String ponderacionStr = ponderacionField.getText().trim();
 
-                if (!codigo.isEmpty() && !descripcion.isEmpty()) {
-                    ce.setCodigo(codigo);
-                    ce.setDescripcion(descripcion);
-                    criterioDao.update(ce);
+                if (!codigo.isEmpty() && !descripcion.isEmpty() && !ponderacionStr.isEmpty()) {
+                    try {
+                        double ponderacion = Double.parseDouble(ponderacionStr);
+                        ce.setCodigo(codigo);
+                        ce.setDescripcion(descripcion);
+                        ce.setPonderacion(ponderacion);
+                        criterioDao.update(ce);
+                    } catch (NumberFormatException ex) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setContentText("La ponderación debe ser un número");
+                        alert.showAndWait();
+                    }
                 }
             }
         });

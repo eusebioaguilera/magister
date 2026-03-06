@@ -16,7 +16,7 @@ public class CriterioEvaluacionDAO {
 
     public List<CriterioEvaluacion> getByResultado(int idResultado) {
         List<CriterioEvaluacion> list = new ArrayList<>();
-        String sql = "SELECT id, id_resultado, codigo, descripcion FROM criterios_evaluacion WHERE id_resultado = ? ORDER BY codigo";
+        String sql = "SELECT id, id_resultado, codigo, descripcion, ponderacion FROM criterios_evaluacion WHERE id_resultado = ? ORDER BY codigo";
         
         try (PreparedStatement ps = db.getConnection().prepareStatement(sql)) {
             ps.setInt(1, idResultado);
@@ -26,7 +26,8 @@ public class CriterioEvaluacionDAO {
                         rs.getInt("id"),
                         rs.getInt("id_resultado"),
                         rs.getString("codigo"),
-                        rs.getString("descripcion")
+                        rs.getString("descripcion"),
+                        rs.getDouble("ponderacion")
                     ));
                 }
             }
@@ -37,13 +38,14 @@ public class CriterioEvaluacionDAO {
     }
 
     public void insert(CriterioEvaluacion ce) {
-        String sql = "INSERT INTO criterios_evaluacion (id, id_resultado, codigo, descripcion) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO criterios_evaluacion (id, id_resultado, codigo, descripcion, ponderacion) VALUES (?, ?, ?, ?, ?)";
         
         try (PreparedStatement ps = db.getConnection().prepareStatement(sql)) {
             ps.setInt(1, ce.getId());
             ps.setInt(2, ce.getIdResultado());
             ps.setString(3, ce.getCodigo());
             ps.setString(4, ce.getDescripcion());
+            ps.setDouble(5, ce.getPonderacion());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,12 +53,13 @@ public class CriterioEvaluacionDAO {
     }
 
     public void update(CriterioEvaluacion ce) {
-        String sql = "UPDATE criterios_evaluacion SET codigo = ?, descripcion = ? WHERE id = ?";
+        String sql = "UPDATE criterios_evaluacion SET codigo = ?, descripcion = ?, ponderacion = ? WHERE id = ?";
         
         try (PreparedStatement ps = db.getConnection().prepareStatement(sql)) {
             ps.setString(1, ce.getCodigo());
             ps.setString(2, ce.getDescripcion());
-            ps.setInt(3, ce.getId());
+            ps.setDouble(3, ce.getPonderacion());
+            ps.setInt(4, ce.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

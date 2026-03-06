@@ -66,6 +66,7 @@ public class Database {
                 id_resultado INTEGER NOT NULL,
                 codigo TEXT NOT NULL,
                 descripcion TEXT NOT NULL,
+                ponderacion REAL NOT NULL DEFAULT 1.0,
                 FOREIGN KEY (id_resultado) REFERENCES resultados_aprendizaje(id) ON DELETE CASCADE
             )
             """;
@@ -78,6 +79,11 @@ public class Database {
             ps2.execute();
             ps3.execute();
             ps4.execute();
+        }
+        
+        try {
+            connection.prepareStatement("ALTER TABLE criterios_evaluacion ADD COLUMN ponderacion REAL NOT NULL DEFAULT 1.0").executeUpdate();
+        } catch (SQLException e) {
         }
     }
 
